@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PetRobot — a friendly assistant robot for homes and libraries</title>
+<meta name="description" content="PetRobot is a research prototype of a talking, self-driving assistant robot: it knows the people it meets, finds its way around, keeps reminders, and teaches.">
+<meta property="og:title" content="PetRobot — a friendly assistant robot">
+<meta property="og:description" content="A research prototype of a talking, self-driving assistant robot for homes and libraries.">
+<meta property="og:image" content="https://petrobot.org/assets/robot-hardware.png">
+<meta property="og:url" content="https://petrobot.org/">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+:root{
+  --bg:#fbfaff; --surface:#ffffff; --ink:#15132b; --muted:#5d5a78; --line:#e6e2f5;
+  --brand:#6a3fd0; --brand-soft:#efe8ff; --face:#ab8dfc; --navy:#0d1b4b; --warm:#ffd166;
+  --ok:#0f7a5c; --ok-soft:#dff5ec; --dev:#8a5a00; --dev-soft:#fff1cc; --plan:#4a5578; --plan-soft:#e9ecf6;
+  --radius:18px; --wrap:1080px;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#0d1117; --surface:#161b26; --ink:#eceaf8; --muted:#a39fbd; --line:#2a3145;
+    --brand:#b9a2ff; --brand-soft:#221a3d; --ok:#6fdcb6; --ok-soft:#10332a; --dev:#ffd166; --dev-soft:#3a2f10;
+    --plan:#b3bcd8; --plan-soft:#1f2636; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--brand)}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+header.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:var(--ink);text-decoration:none;letter-spacing:-.01em}
+.logo img{width:30px;height:30px}
+.nav nav{display:flex;gap:22px}
+.nav nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.nav nav a:hover{color:var(--ink)}
+@media (max-width:640px){.nav nav a:not(.keep){display:none}}
+
+.hero{padding:64px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+.tag{display:inline-block;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px}
+h1{font-size:clamp(2.2rem,5.2vw,3.5rem);line-height:1.08;letter-spacing:-.03em;margin:18px 0 16px}
+.lead{font-size:1.18rem;color:var(--muted);max-width:34em;margin:0 0 26px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-block;padding:13px 22px;border-radius:12px;font-weight:700;text-decoration:none;border:2px solid var(--brand)}
+.btn.primary{background:var(--brand);color:var(--bg)}
+.btn.ghost{color:var(--brand)}
+.face{aspect-ratio:1;max-width:400px;width:100%;margin:0 auto;display:block}
+.face .blink{animation:blink 5s infinite;transform-origin:center;transform-box:fill-box}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.08)}}
+@media (prefers-reduced-motion:reduce){.face .blink{animation:none}html{scroll-behavior:auto}}
+@media (max-width:820px){.hero{padding-top:36px}.hero .wrap{grid-template-columns:1fr}.face{max-width:240px;order:-1}}
+
+section{padding:56px 0}
+section.alt{background:var(--surface);border-block:1px solid var(--line)}
+h2{font-size:clamp(1.6rem,3.2vw,2.1rem);letter-spacing:-.02em;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 30px;max-width:44em}
+.video{position:relative;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:#000;border:1px solid var(--line)}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+section.alt .card{background:var(--bg)}
+.card h3{margin:10px 0 6px;font-size:1.1rem}
+.card p{margin:0;color:var(--muted);font-size:.97rem}
+.pill{display:inline-block;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.dev{background:var(--dev-soft);color:var(--dev)}
+.pill.plan{background:var(--plan-soft);color:var(--plan)}
+
+.hw{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:start}
+@media (max-width:820px){.hw{grid-template-columns:1fr}}
+.hw figure{margin:0}
+.hw img{border-radius:var(--radius);border:1px solid var(--line);width:100%}
+.hw figcaption{color:var(--muted);font-size:.88rem;margin-top:8px}
+.spec{list-style:none;margin:0;padding:0}
+.spec li{padding:13px 0;border-bottom:1px solid var(--line)}
+.spec li:last-child{border-bottom:0}
+.spec b{display:block}
+.spec span{color:var(--muted);font-size:.95rem}
+
+.contact{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:720px}
+@media (max-width:560px){.contact{grid-template-columns:1fr}}
+.contact a{display:block;text-decoration:none;color:var(--ink)}
+.contact .k{color:var(--muted);font-size:.85rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.contact .v{font-size:1.15rem;font-weight:700;color:var(--brand);word-break:break-word}
+footer{padding:28px 0 40px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><img src="assets/favicon.svg" alt="">PetRobot</a>
+    <nav>
+      <a href="#video">Video</a>
+      <a href="#features">What it does</a>
+      <a href="#hardware">Hardware</a>
+      <a class="keep" href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <span class="tag">Research prototype</span>
+      <h1>A friendly robot that talks, remembers and finds its way.</h1>
+      <p class="lead">PetRobot is an assistant robot for homes and public spaces like libraries. Say “Hey Jarvis” and it turns to face you, answers out loud, and can lead you where you need to go.</p>
+      <div class="cta">
+        <a class="btn primary" href="#video">Watch the demo</a>
+        <a class="btn ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+    <svg class="face" viewBox="0 0 200 200" role="img" aria-label="PetRobot's animated face">
+      <circle cx="100" cy="100" r="92" fill="#ab8dfc" stroke="#b39ddb" stroke-width="3"/>
+      <ellipse cx="46" cy="112" rx="13" ry="9" fill="#ff9ec4"/><ellipse cx="154" cy="112" rx="13" ry="9" fill="#ff9ec4"/>
+      <g class="blink">
+        <ellipse cx="64" cy="80" rx="19" ry="25" fill="#fff"/><ellipse cx="136" cy="80" rx="19" ry="25" fill="#fff"/>
+        <circle cx="66" cy="78" r="9" fill="#0d1b4b"/><circle cx="138" cy="78" r="9" fill="#0d1b4b"/>
+      </g>
+      <path d="M62 128c18 26 58 26 76 0" fill="none" stroke="#0d1b4b" stroke-width="9" stroke-linecap="round"/>
+    </svg>
+  </div>
+</div>
+
+<section id="video" class="alt">
+  <div class="wrap">
+    <h2>See it in action</h2>
+    <p class="sub">A short demo of the current prototype.</p>
+    <div class="video">
+      <iframe src="https://www.youtube-nocookie.com/embed/ggUFHPtVB1k" title="PetRobot demo video" loading="lazy"
+        allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="sub">The project is under active development. Each item is marked with where it stands today.</p>
+    <div class="grid">
+      <div class="card"><span class="pill ok">Working</span><h3>Natural conversation</h3><p>Wakes on “Hey Jarvis”, turns toward the speaker, and answers by voice with an animated face on its touchscreen.</p></div>
+      <div class="card"><span class="pill ok">Working</span><h3>Knows who it's talking to</h3><p>Recognises returning people by face and voice and greets them by name.</p></div>
+      <div class="card"><span class="pill ok">Working</span><h3>Guides you to places</h3><p>Maps its surroundings with a lidar and drives itself to named spots on request.</p></div>
+      <div class="card"><span class="pill ok">Working</span><h3>Reminders and timers</h3><p>“Remind Jane to take her medicine every Monday at 9 PM” — and it does, out loud.</p></div>
+      <div class="card"><span class="pill ok">Working</span><h3>Photos</h3><p>Takes a picture on request with a live preview and countdown on screen.</p></div>
+      <div class="card"><span class="pill dev">In testing</span><h3>Short lessons</h3><p>Teaches a topic step by step with slides on its screen and quick questions, and remembers your progress.</p></div>
+      <div class="card"><span class="pill dev">In testing</span><h3>Learns by watching</h3><p>Show it a task once; it saves the steps with photos and can walk someone else through it.</p></div>
+      <div class="card"><span class="pill dev">In testing</span><h3>Remembers many places</h3><p>Keeps a separate map for each place it works in, including the objects it has seen there.</p></div>
+      <div class="card"><span class="pill plan">Planned</span><h3>Library assistant</h3><p>A pilot in a university library: help students find books and lead them to the right shelf.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="hardware" class="alt">
+  <div class="wrap">
+    <h2>Inside the robot</h2>
+    <p class="sub">Built from off-the-shelf parts on an aluminium frame, running ROS&nbsp;2.</p>
+    <div class="hw">
+      <figure>
+        <img src="assets/robot-hardware.png" width="570" height="430" alt="The PetRobot prototype with its main components labelled: OAK-D S2 camera, ReSpeaker microphone array, RPLIDAR A1, Jetson Orin Nano Super and MQ3 chemical sensor.">
+        <figcaption>The current prototype and its main components.</figcaption>
+      </figure>
+      <ul class="spec">
+        <li><b>NVIDIA Jetson Orin Nano Super</b><span>On-board computer for vision, speech and navigation.</span></li>
+        <li><b>OAK-D S2 RGB-D camera</b><span>Colour and depth for photos and object mapping.</span></li>
+        <li><b>ReSpeaker XVF3800 microphone array</b><span>Hears the wake word and where a voice comes from.</span></li>
+        <li><b>RPLIDAR A1</b><span>360° laser scanner for mapping and obstacle avoidance.</span></li>
+        <li><b>7-inch touchscreen</b><span>The robot's face, plus buttons for everything it can do.</span></li>
+        <li><b>MQ3 chemical sensor</b><span>Gas sensing for research on odour-source search.</span></li>
+        <li><b>Differential-drive base</b><span>Two driven wheels; turns on the spot.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <h2>Get in touch</h2>
+    <p class="sub">Interested in the project, a pilot, or collaborating? I'd be glad to hear from you.</p>
+    <div class="contact">
+      <a class="card" href="mailto:sunzidhassan@gmail.com"><div class="k">Email</div><div class="v">sunzidhassan@gmail.com</div></a>
+      <a class="card" href="tel:+13185138248"><div class="k">Phone</div><div class="v">318-513-8248</div></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">PetRobot is an independent research project by Sunzid Hassan. It is a prototype, not a commercial product.</div>
+</footer>
+
+</body>
+</html>
