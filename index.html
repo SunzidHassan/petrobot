@@ -47,11 +47,12 @@ h1{font-size:clamp(2.2rem,5.2vw,3.5rem);line-height:1.08;letter-spacing:-.03em;m
 .btn{display:inline-block;padding:13px 22px;border-radius:12px;font-weight:700;text-decoration:none;border:2px solid var(--brand)}
 .btn.primary{background:var(--brand);color:var(--bg)}
 .btn.ghost{color:var(--brand)}
-.face{aspect-ratio:1;max-width:400px;width:100%;margin:0 auto;display:block}
+.face{max-width:460px;width:100%;margin:0 auto;display:block;border-radius:22px;box-shadow:0 18px 50px rgba(20,12,60,.25)}
+.face .still{display:none}
 .face .blink{animation:blink 5s infinite;transform-origin:center;transform-box:fill-box}
 @keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.08)}}
-@media (prefers-reduced-motion:reduce){.face .blink{animation:none}html{scroll-behavior:auto}}
-@media (max-width:820px){.hero{padding-top:36px}.hero .wrap{grid-template-columns:1fr}.face{max-width:240px;order:-1}}
+@media (prefers-reduced-motion:reduce){.face .blink{animation:none}.face .wave{display:none}.face .still{display:inline}html{scroll-behavior:auto}}
+@media (max-width:820px){.hero{padding-top:36px}.hero .wrap{grid-template-columns:1fr}.face{max-width:320px;order:-1}}
 
 section{padding:56px 0}
 section.alt{background:var(--surface);border-block:1px solid var(--line)}
@@ -72,6 +73,11 @@ section.alt .card{background:var(--bg)}
 .pill.dev{background:var(--dev-soft);color:var(--dev)}
 .pill.plan{background:var(--plan-soft);color:var(--plan)}
 
+.shots{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.shots figure{margin:0}
+.shots img{width:100%;height:auto;border-radius:14px;border:1px solid var(--line)}
+.shots figcaption{color:var(--muted);font-size:.9rem;margin-top:8px;text-align:center}
+@media (max-width:820px){.shots{grid-template-columns:1fr}}
 .hw{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:start}
 @media (max-width:820px){.hw{grid-template-columns:1fr}}
 .hw figure{margin:0}
@@ -98,6 +104,7 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:.9rem;border-top:1px sol
     <a class="logo" href="#top"><img src="assets/favicon.svg" alt="">PetRobot</a>
     <nav>
       <a href="#video">Video</a>
+      <a href="#screen">The screen</a>
       <a href="#features">What it does</a>
       <a href="#hardware">Hardware</a>
       <a class="keep" href="#contact">Contact</a>
@@ -117,14 +124,21 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:.9rem;border-top:1px sol
         <a class="btn ghost" href="#contact">Get in touch</a>
       </div>
     </div>
-    <svg class="face" viewBox="0 0 200 200" role="img" aria-label="PetRobot's animated face">
-      <circle cx="100" cy="100" r="92" fill="#ab8dfc" stroke="#b39ddb" stroke-width="3"/>
-      <ellipse cx="46" cy="112" rx="13" ry="9" fill="#ff9ec4"/><ellipse cx="154" cy="112" rx="13" ry="9" fill="#ff9ec4"/>
-      <g class="blink">
-        <ellipse cx="64" cy="80" rx="19" ry="25" fill="#fff"/><ellipse cx="136" cy="80" rx="19" ry="25" fill="#fff"/>
-        <circle cx="66" cy="78" r="9" fill="#0d1b4b"/><circle cx="138" cy="78" r="9" fill="#0d1b4b"/>
+    <svg class="face" viewBox="0 0 320 200" role="img" aria-label="PetRobot's screen: two eyes and a moving voice line">
+      <rect width="320" height="200" rx="22" fill="#0b0e14"/>
+      <g class="blink" fill="#cdbcff">
+        <rect x="92" y="38" width="46" height="62" rx="21"/>
+        <rect x="182" y="38" width="46" height="62" rx="21"/>
       </g>
-      <path d="M62 128c18 26 58 26 76 0" fill="none" stroke="#0d1b4b" stroke-width="9" stroke-linecap="round"/>
+      <path class="wave" fill="none" stroke="#cdbcff" stroke-width="5" stroke-linecap="round"
+            d="M70 146 C 95 146, 105 130, 125 146 S 150 164, 170 146 S 200 132, 215 146 S 240 146, 250 146">
+        <animate attributeName="d" dur="1.6s" repeatCount="indefinite" values="
+          M70 146 C 95 146, 105 130, 125 146 S 150 164, 170 146 S 200 132, 215 146 S 240 146, 250 146;
+          M70 146 C 95 146, 105 160, 125 146 S 150 126, 170 146 S 200 158, 215 146 S 240 146, 250 146;
+          M70 146 C 95 146, 105 138, 125 146 S 150 156, 170 146 S 200 136, 215 146 S 240 146, 250 146;
+          M70 146 C 95 146, 105 130, 125 146 S 150 164, 170 146 S 200 132, 215 146 S 240 146, 250 146"/>
+      </path>
+      <path class="still" fill="none" stroke="#cdbcff" stroke-width="5" stroke-linecap="round" opacity=".5" d="M100 146H220"/>
     </svg>
   </div>
 </div>
@@ -140,12 +154,24 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:.9rem;border-top:1px sol
   </div>
 </section>
 
-<section id="features">
+<section id="screen">
+  <div class="wrap">
+    <h2>A face made of two eyes and a line</h2>
+    <p class="sub">The eyes show where the robot's attention is and how it feels. The line shows sound: blue bars while it hears you, a purple wave while it speaks. Everything it can do is also one tap away.</p>
+    <div class="shots">
+      <figure><img src="assets/screen-listening.png" width="960" height="540" loading="lazy" alt="The robot's screen while listening: two eyes turned toward the speaker and a row of blue level bars."><figcaption>Listening</figcaption></figure>
+      <figure><img src="assets/screen-lesson.png" width="960" height="540" loading="lazy" alt="A lesson slide on the robot's screen, with the eyes in the corner and Next, Again and End lesson buttons."><figcaption>Teaching a short lesson</figcaption></figure>
+      <figure><img src="assets/screen-reminder.png" width="960" height="540" loading="lazy" alt="A full-screen reminder on the robot's screen with Done and Snooze buttons."><figcaption>A reminder</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="alt">
   <div class="wrap">
     <h2>What it does</h2>
     <p class="sub">The project is under active development. Each item is marked with where it stands today.</p>
     <div class="grid">
-      <div class="card"><span class="pill ok">Working</span><h3>Natural conversation</h3><p>Wakes on “Hey Jarvis”, turns toward the speaker, and answers by voice with an animated face on its touchscreen.</p></div>
+      <div class="card"><span class="pill ok">Working</span><h3>Natural conversation</h3><p>Wakes on “Hey Jarvis”, turns toward the speaker, and answers by voice. Its eyes look at whoever is talking.</p></div>
       <div class="card"><span class="pill ok">Working</span><h3>Knows who it's talking to</h3><p>Recognises returning people by face and voice and greets them by name.</p></div>
       <div class="card"><span class="pill ok">Working</span><h3>Guides you to places</h3><p>Maps its surroundings with a lidar and drives itself to named spots on request.</p></div>
       <div class="card"><span class="pill ok">Working</span><h3>Reminders and timers</h3><p>“Remind Jane to take her medicine every Monday at 9 PM” — and it does, out loud.</p></div>
@@ -158,7 +184,7 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:.9rem;border-top:1px sol
   </div>
 </section>
 
-<section id="hardware" class="alt">
+<section id="hardware">
   <div class="wrap">
     <h2>Inside the robot</h2>
     <p class="sub">Built from off-the-shelf parts on an aluminium frame, running ROS&nbsp;2.</p>
@@ -180,7 +206,7 @@ footer{padding:28px 0 40px;color:var(--muted);font-size:.9rem;border-top:1px sol
   </div>
 </section>
 
-<section id="contact">
+<section id="contact" class="alt">
   <div class="wrap">
     <h2>Get in touch</h2>
     <p class="sub">Interested in the project, a pilot, or collaborating? I'd be glad to hear from you.</p>
